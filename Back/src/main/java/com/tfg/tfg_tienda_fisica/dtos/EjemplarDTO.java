@@ -1,0 +1,23 @@
+package com.tfg.tfg_tienda_fisica.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class EjemplarDTO{
+
+    private long Id;
+    private String serie;
+    private LocalDate fechaVenta;
+    private LocalDate fechaCompra;
+    private int unidades;
+    private String estado;
+    private ProductoDTOL producto;
+    private TiendaDTO tienda;
+
+}

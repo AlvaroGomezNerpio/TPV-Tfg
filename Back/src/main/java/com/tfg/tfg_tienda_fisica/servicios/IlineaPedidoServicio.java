@@ -1,0 +1,18 @@
+package com.tfg.tfg_tienda_fisica.servicios;
+
+
+import com.tfg.tfg_tienda_fisica.dtos.LineaPedidoDTO;
+
+import java.util.List;
+
+public interface IlineaPedidoServicio {
+
+    public List<LineaPedidoDTO> obtenerTodo();
+
+    public LineaPedidoDTO guardar(LineaPedidoDTO lineaPedido);
+
+    public LineaPedidoDTO obtenerPorId(long id);
+
+    public void eliminar(long id);
+
+}

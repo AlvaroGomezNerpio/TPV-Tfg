@@ -1,0 +1,60 @@
+package com.tfg.tfg_tienda_fisica.controladores;
+
+import com.tfg.tfg_tienda_fisica.dtos.LineaFacturaDTO;
+import com.tfg.tfg_tienda_fisica.servicios.LineaFacturaServicioImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+
+@RestController
+@RequestMapping("/lineaFactura")
+@CrossOrigin(origins = "*")
+public class LineaFacturaControlador {
+
+    @Autowired
+    private LineaFacturaServicioImpl lineaFacturaService;
+
+    @GetMapping("/listar")
+    public List<LineaFacturaDTO> obtenerLineasFactura(){
+        return lineaFacturaService.obtenerTodo();
+    }
+
+    @GetMapping("producto/{productoId}")
+    public List<LineaFacturaDTO> obtenerLineasFacturaByProducto(@PathVariable Long productoId){
+        return lineaFacturaService.findByProductoId(productoId);
+    }
+
+    @GetMapping("/factura/{facturaId}")
+    public List<LineaFacturaDTO> obtenerLineasFacturaByFactura(@PathVariable Long facturaId){
+        return lineaFacturaService.findByFacturaId(facturaId);
+    }
+
+    @PostMapping("/guardar")
+    public ResponseEntity<LineaFacturaDTO> guardarLineaFactura(@RequestBody LineaFacturaDTO lineaFactura){
+        lineaFacturaService.guardar(lineaFactura);
+        return new ResponseEntity<>(lineaFactura, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LineaFacturaDTO> obtenerlineaFactura(@PathVariable long id){
+        LineaFacturaDTO lineaFacturaId = lineaFacturaService.obtenerPorId(id);
+
+        return ResponseEntity.ok(lineaFacturaId);
+    }
+
+    //implementar update
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HashMap<String, Boolean>> eliminarlineaFactura(@PathVariable long id){
+        this.lineaFacturaService.eliminar(id);
+
+        HashMap<String, Boolean> estadoLineaFacturaEliminado = new HashMap<>();
+        estadoLineaFacturaEliminado.put("eliminado", true);
+        return  ResponseEntity.ok(estadoLineaFacturaEliminado);
+    }
+
+}

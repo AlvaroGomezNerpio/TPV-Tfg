@@ -1,0 +1,124 @@
+package com.tfg.tfg_tienda_fisica.controladores;
+
+import com.tfg.tfg_tienda_fisica.dtos.ProductoDTO;
+import com.tfg.tfg_tienda_fisica.servicios.ProductoServicioImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
+@RestController
+@RequestMapping("/producto")
+@CrossOrigin(origins = "*")
+public class ProductoControlador {
+
+    @Autowired
+    ProductoServicioImpl productoServicio;
+
+    @GetMapping("/listar")
+    public List<ProductoDTO> obtenerProductos(){
+        return productoServicio.obtenerTodo();
+    }
+
+    @GetMapping("/nombre/{texto}")
+    public List<ProductoDTO> obtenerProductosByNombreContains(@PathVariable String texto){
+        return productoServicio.findByNombreContaining(texto);
+    }
+
+    @GetMapping("/marca/{marcaId}")
+    public List<ProductoDTO> obtenerProductoByMarca(@PathVariable Long marcaId){
+        return productoServicio.findByCategoriaId(marcaId);
+    }
+
+    @GetMapping("/categoria/{categoriaId}")
+    public List<ProductoDTO> obtenerProductosByCategoria(@PathVariable Long categoriaId){
+        return productoServicio.findByCategoriaId(categoriaId);
+    }
+
+    @GetMapping("/random/{num}")
+    public List<ProductoDTO> obtenerProductosRamdon(@PathVariable int num){
+
+        List<ProductoDTO> productosRandom = new ArrayList<>();
+        List<ProductoDTO> productos = productoServicio.obtenerTodo();
+        int numProductos = productos.size();
+
+        for (int i = 0; i < num; i++) {
+
+            Random random = new Random();
+            int randomNumber = random.nextInt(numProductos);
+
+            productosRandom.add(productos.get(randomNumber));
+
+        }
+
+        return productosRandom;
+
+    }
+
+    @GetMapping("/random/categoria/{categoriaId}/{num}")
+    public List<ProductoDTO> obtenerProductosRamdonByCategoria(@PathVariable Long categoriaId, @PathVariable int num){
+
+        List<ProductoDTO> productosRandom = new ArrayList<>();
+        List<ProductoDTO> productos = productoServicio.findByCategoriaId(categoriaId);
+        int numProductos = productos.size();
+
+        for (int i = 0; i < num; i++) {
+
+            Random random = new Random();
+            int randomNumber = random.nextInt(numProductos);
+
+            productosRandom.add(productos.get(randomNumber));
+
+        }
+
+        return productosRandom;
+
+    }
+
+    @GetMapping("/random/marca/{marcaId}/{num}")
+    public List<ProductoDTO> obtenerProductosRamdonByMarca(@PathVariable long marcaId,@PathVariable int num){
+
+        List<ProductoDTO> productosRandom = new ArrayList<>();
+        List<ProductoDTO> productos = productoServicio.findByMarcaId(marcaId);
+        int numProductos = productos.size();
+
+        for (int i = 0; i < num; i++) {
+
+            Random random = new Random();
+            int randomNumber = random.nextInt(numProductos);
+
+            productosRandom.add(productos.get(randomNumber));
+
+        }
+
+        return productosRandom;
+
+    }
+
+    @PostMapping("/guardar")
+    public ResponseEntity<ProductoDTO> guardarProducto(@RequestBody ProductoDTO producto){
+        productoServicio.guardar(producto);
+        return new ResponseEntity<>(producto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoDTO> obtenerProducto(@PathVariable Long id){
+        ProductoDTO productoId = productoServicio.obtenerPorId(id);
+        return ResponseEntity.ok(productoId);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HashMap<String, Boolean>> eliminarProducto(@PathVariable Long id){
+        this.productoServicio.eliminar(id);
+
+        HashMap<String, Boolean> estadoProductoEliminado = new HashMap<>();
+        estadoProductoEliminado.put("eliminado", true);
+        return  ResponseEntity.ok(estadoProductoEliminado);
+    }
+
+}

@@ -1,0 +1,101 @@
+package com.tfg.tfg_tienda_fisica.servicios;
+
+import com.tfg.tfg_tienda_fisica.dtos.LineaPedidoDTO;
+import com.tfg.tfg_tienda_fisica.modelos.LineaPedido;
+import com.tfg.tfg_tienda_fisica.repositorios.LineaPedidoRepositorio;
+import com.tfg.tfg_tienda_fisica.utils.ModelMapperUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class LineaPedidoServicioImpl implements IlineaPedidoServicio{
+
+    @Autowired
+    LineaPedidoRepositorio lineaPedidoRepositorio;
+
+    @Override
+    public List<LineaPedidoDTO> obtenerTodo() {
+
+        List<LineaPedido> lineasPedidos = lineaPedidoRepositorio.findAll();
+        List<LineaPedidoDTO> lineasPedidosDTO = new ArrayList<>();
+        if (!lineasPedidos.isEmpty()) {
+
+            lineasPedidosDTO = ModelMapperUtil.transformDtoList(lineasPedidos, LineaPedidoDTO.class);
+        }
+
+        return lineasPedidosDTO;
+
+    }
+
+    public List<LineaPedidoDTO> findByPedidoId(Long pedidoId){
+        List<LineaPedido> lineasPedidos = lineaPedidoRepositorio.findByPedidoId(pedidoId);
+        List<LineaPedidoDTO> lineasPedidosDTO = new ArrayList<>();
+        if (!lineasPedidos.isEmpty()) {
+
+            lineasPedidosDTO = ModelMapperUtil.transformDtoList(lineasPedidos, LineaPedidoDTO.class);
+        }
+
+        return lineasPedidosDTO;
+    }
+
+    public List<LineaPedidoDTO> findByFacturaId(Long facturaId){
+        List<LineaPedido> lineasPedidos = lineaPedidoRepositorio.findByFacturaId(facturaId);
+        List<LineaPedidoDTO> lineasPedidosDTO = new ArrayList<>();
+        if (!lineasPedidos.isEmpty()) {
+
+            lineasPedidosDTO = ModelMapperUtil.transformDtoList(lineasPedidos, LineaPedidoDTO.class);
+        }
+
+        return lineasPedidosDTO;
+    }
+
+    public List<LineaPedidoDTO> findByProductoId(Long productoId){
+        List<LineaPedido> lineasPedidos = lineaPedidoRepositorio.findByProductoId(productoId);
+        List<LineaPedidoDTO> lineasPedidosDTO = new ArrayList<>();
+        if (!lineasPedidos.isEmpty()) {
+
+            lineasPedidosDTO = ModelMapperUtil.transformDtoList(lineasPedidos, LineaPedidoDTO.class);
+        }
+
+        return lineasPedidosDTO;
+    }
+
+    @Override
+    public LineaPedidoDTO guardar(LineaPedidoDTO lineaPedido) {
+
+        LineaPedido lineaPedidoEnti = ModelMapperUtil.transformDto(lineaPedido, LineaPedido.class);
+
+        return ModelMapperUtil.transformDto(lineaPedidoRepositorio.save(lineaPedidoEnti), LineaPedidoDTO.class);
+
+    }
+
+    @Override
+    public LineaPedidoDTO obtenerPorId(long id) {
+
+        Optional<LineaPedido> lineaPedido = lineaPedidoRepositorio.findById(id);
+        LineaPedidoDTO lineaPedidoDTO = new LineaPedidoDTO();
+
+        if (lineaPedido.isPresent()) {
+
+            lineaPedidoDTO = ModelMapperUtil.transformDto(lineaPedido.get(), LineaPedidoDTO.class);
+
+            return lineaPedidoDTO;
+        } else {
+
+            return null;
+        }
+
+    }
+
+    @Override
+    public void eliminar(long id) {
+
+        lineaPedidoRepositorio.deleteById(id);
+
+    }
+
+}
